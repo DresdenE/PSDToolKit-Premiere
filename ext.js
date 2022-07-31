@@ -4,23 +4,22 @@ function onLoaded () {
     loadJSX();
 
     updateThemeWithAppSkinInfo(csInterface.hostEnvironment.appSkinInfo);
-    alert("theme updated");
     
     // Update the color of the panel when the theme color of the product changed.
     csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, onAppThemeColorChanged);
     csInterface.addEventListener("ApplicationBeforeQuit", function(event) {
-        csInterface.evalScript("$._PPP_.closeLog()");
+        csInterface.evalScript("$._PSDTK_.closeLog()");
     });
 
-    csInterface.evalScript("$._PPP_.getVersionInfo()", myVersionInfoFunction);    
-    csInterface.evalScript("$._PPP_.getActiveSequenceName()", myCallBackFunction);        
-    csInterface.evalScript("$._PPP_.keepPanelLoaded()");
-    csInterface.evalScript("$._PPP_.disableImportWorkspaceWithProjects()");  
-    csInterface.evalScript("$._PPP_.confirmPProHostVersion()");
-    csInterface.evalScript("$._PPP_.forceLogfilesOn()");  // turn on log files when launching
+    csInterface.evalScript("$._PSDTK_.getVersionInfo()", myVersionInfoFunction);    
+    csInterface.evalScript("$._PSDTK_.getActiveSequenceName()", myCallBackFunction);        
+    csInterface.evalScript("$._PSDTK_.keepPanelLoaded()");
+    csInterface.evalScript("$._PSDTK_.disableImportWorkspaceWithProjects()");  
+    csInterface.evalScript("$._PSDTK_.confirmPProHostVersion()");
+    csInterface.evalScript("$._PSDTK_.forceLogfilesOn()");  // turn on log files when launching
 
     // Good idea from our friends at Evolphin; make the ExtendScript locale match the JavaScript locale!
-    var prefix        = "$._PPP_.setLocale('";
+    var prefix        = "$._PSDTK_.setLocale('";
     var locale         = csInterface.hostEnvironment.appUILocale;
     var postfix        = "');";
 
@@ -55,8 +54,8 @@ function updateThemeWithAppSkinInfo(appSkinInfo) {
     // Update the background color of the panel
     var panelBackgroundColor = appSkinInfo.panelBackgroundColor.color;
     document.body.bgColor = toHex(panelBackgroundColor);
-
-    var styleId             = "panelstyle"
+    
+    var styleId             = "panelstyle";
     var gradientBg			= "background-image: -webkit-linear-gradient(top, " + toHex(panelBackgroundColor, 40) + " , " + toHex(panelBackgroundColor, 10) + ");";
     var gradientDisabledBg	= "background-image: -webkit-linear-gradient(top, " + toHex(panelBackgroundColor, 15) + " , " + toHex(panelBackgroundColor, 5) + ");";
     var boxShadow			= "-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);";
@@ -78,11 +77,10 @@ function updateThemeWithAppSkinInfo(appSkinInfo) {
         inputBackgroundColor	= toHex(panelBackgroundColor, -20) + ";";
         gradientHighlightBg		= "background-image: -webkit-linear-gradient(top, " + toHex(panelBackgroundColor, -20) + " , " + toHex(panelBackgroundColor, -30) + ");";
     }
-    alert("starting addRule")
 
     // Update the default text style with pp values
     addRule(styleId, ".default", "font-size:" + appSkinInfo.baseFontSize + "px" + "; color:" + fontColor + "; background-color:" + toHex(panelBackgroundColor) + ";");
-    addRule(styleId, "button, select, input[type=text], input[type=button], input[type=submit]", borderColor);  
+    addRule(styleId, "button, select, input[type=text], input[type=button], input[type=submit]", borderColor);
     addRule(styleId, "p", "color:" + fontColor + ";");
     addRule(styleId, "h1", "color:" + fontColor + ";");
     addRule(styleId, "h2", "color:" + fontColor + ";");
@@ -99,6 +97,37 @@ function updateThemeWithAppSkinInfo(appSkinInfo) {
     addRule(styleId, "input[type=text]", "background-color: " + inputBackgroundColor + ";");
     addRule(styleId, "input[type=text]:focus", "background-color: #ffffff;");
     addRule(styleId, "input[type=text]:focus", "color: #000000;");
+}
+
+function toHex (color, delta) {
+    var hex = "";
+    if (color) {
+        hex = computeValue(color.red, delta) + computeValue(color.green, delta) + computeValue(color.blue, delta);
+    }
+    return "#" + hex;
+}
+
+function computeValue(value, delta) {
+    var computedValue = !isNaN(delta) ? value + delta : value;
+    if (computedValue < 0) {
+        computedValue = 0;
+    } else if (computedValue > 255) {
+        computedValue = 255;
+    }
+    computedValue = Math.round(computedValue).toString(16);
+    return computedValue.length == 1 ? "0" + computedValue : computedValue;
+}
+
+function addRule(stylesheetId, selector, rule) {
+    var stylesheet = document.getElementById(stylesheetId);
+    if (stylesheet) {
+        stylesheet = stylesheet.sheet;
+        if( stylesheet.addRule ) {
+            stylesheet.addRule(selector, rule);
+        } else if( stylesheet.insertRule ) {
+            stylesheet.insertRule(selector + " { " + rule + " }", stylesheet.cssRules.length);
+        }
+    }
 }
 
 function myVersionInfoFunction (data) {

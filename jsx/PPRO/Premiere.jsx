@@ -63,7 +63,7 @@ var BitPrecision_HDR	= 3;
 
 var NOT_SET = "-400000";
 
-$._PPP_ = {
+$._PSDTK_ = {
     updateEventPanel : function (message) {
         app.setSDKEventMessage(message, 'info');
     },
@@ -74,7 +74,7 @@ $._PPP_ = {
 
     getActiveSequenceName : function () {
         if (app.project.activeSequence) {
-            return app.project.activeSequence;
+            return app.project.activeSequence.name;
         } else {
             return "No active sequence.";
         }
@@ -92,14 +92,14 @@ $._PPP_ = {
         app.properties.setProperty(prefToModify, "0", 1, false);
         var safetyCheck = app.properties.getProperty(prefToModify);
         if (safetyCheck != propertyValue) {
-            $._PPP_.updateEventPanel("Changed \'Import Workspaces with Projects\' from " + propertyValue + " to " + safetyCheck + ".");
+            $._PSDTK_.updateEventPanel("Changed \'Import Workspaces with Projects\' from " + propertyValue + " to " + safetyCheck + ".");
         }
     },
 
     confirmPProHostVersion : function () {
         var version = parseFloat(app.version);
         if (version < 14.0) {
-            $._PPP_.updateEventPanel("Note: PProPanel relies on features added in 14.0, but is currently running in " + version + ".");
+            $._PSDTK_.updateEventPanel("Note: PProPanel relies on features added in 14.0, but is currently running in " + version + ".");
         }
     },
 
@@ -108,10 +108,10 @@ $._PPP_ = {
         var previousLogFilesValue = qe.getDebugDatabaseEntry("CreateLogFilesThatDoNotExist");
 
         if (previousLogFilesValue === 'true') {
-            $._PPP_.updateEventPanel("Force create Log files was already ON.");
+            $._PSDTK_.updateEventPanel("Force create Log files was already ON.");
         } else {
             qe.setDebugDatabaseEntry("CreateLogFilesThatDoNotExist", "true");
-            $._PPP_.updateEventPanel("Set Force create Log files to ON.");
+            $._PSDTK_.updateEventPanel("Set Force create Log files to ON.");
         }
     },
 }

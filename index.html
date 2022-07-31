@@ -28,8 +28,7 @@
 </body>
 <script>
     document.body.onbeforeunload = function() {
-        var csInterface = new CSInterface();
-        csInterface.evalScript('$._PPP_.closeLog()');
+        new CSInterface().evalScript('$._PSDTK_.closeLog()');
     };
 </script>
 </html>
