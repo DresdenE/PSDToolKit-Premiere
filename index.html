@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<title>PSDtoolkit</title>
+<head>
+    <meta charset="utf-8">
+    <script src="./ext.js"></script>
+    <script src="./lib/CEPEngine_extensions.js"></script>
+    <script src="./lib/CSInterface.js"></script>
+    <script src="./lib/jquery-1.9.1.js"></script>
+    <link id="panelstyle" href="./css/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#readAPIdocs").on("click", function (e) {
+                e.preventDefault();
+                var csInterface = new CSInterface();
+                csInterface.openURLInDefaultBrowser("http://ppro.aenhancers.com");
+            });
+        })
+    </script>
+</head>
+<body onLoad="onLoaded()">
+    <a href="javascript:history.go(0)">Refresh panel</a>
+    <p id="version_string">[uninitialized]</p>
+    <p id="active_seq">[uninitialized]</p>
+    <div id="section1" class="sectionID">
+        <button id="readAPIdocs">Read API documentation</button>
+    </div>
+</body>
+<script>
+    document.body.onbeforeunload = function() {
+        var csInterface = new CSInterface();
+        csInterface.evalScript('$._PPP_.closeLog()');
+    };
+</script>
+</html>
